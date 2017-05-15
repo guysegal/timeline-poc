@@ -8,33 +8,20 @@ import {
 
 import uuid from 'react-native-uuid';
 
-///////// State
 import {Provider} from 'react-redux'
-import { createStore } from 'redux'
+import {createStore, applyMiddleware} from 'redux'
+import thunk from 'redux-thunk';
 
-function reducer(state = {}, action) {
-  switch (action.type) {
-
-    default:
-      return state
-  }
-}
-
-const store = createStore(reducer);
-
-// store.subscribe(() =>
-//   console.log(store.getState())
-// )
-//////
-
-
+import {timelineReducer} from './src/playground/state'
+const store = createStore(timelineReducer, applyMiddleware(thunk));
 
 import {setObservableConfig} from 'recompose';
 import rxjsconfig from 'recompose/rxjsObservableConfig'
 setObservableConfig(rxjsconfig)
 
 //import Timeline from './src/flatList/timeline.js';
-import Timeline from './src/invertedListView/timeline.js';
+//import Timeline from './src/invertedListView/timeline.js';
+import Timeline from './src/playground/timeline.js';
 
 export default class TimelinePOC extends Component {
   state = {
@@ -76,7 +63,7 @@ export default class TimelinePOC extends Component {
     }
     return (
       <Provider store={store}>
-        <Timeline items={this.state.items} />
+        <Timeline />
       </Provider>
     );
   }

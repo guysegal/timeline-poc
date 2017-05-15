@@ -10,7 +10,8 @@ import uuid from 'react-native-uuid';
 
 ///////// State
 import {Provider} from 'react-redux'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk';
 
 function reducer(state = {}, action) {
   switch (action.type) {
@@ -20,14 +21,7 @@ function reducer(state = {}, action) {
   }
 }
 
-const store = createStore(reducer);
-
-// store.subscribe(() =>
-//   console.log(store.getState())
-// )
-//////
-
-
+const store = createStore(reducer, applyMiddleware(thunk));
 
 import {setObservableConfig} from 'recompose';
 import rxjsconfig from 'recompose/rxjsObservableConfig'

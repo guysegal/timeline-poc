@@ -1,21 +1,31 @@
 import React from 'react';
 import {View, ListView} from 'react-native';
-import {compose, lifecycle, mapProps} from 'recompose';
-import uuid from 'react-native-uuid';
+import {connect} from 'react-redux';
+import {compose, lifecycle, mapProps, mapPropsStream} from 'recompose';
 import throttle from 'lodash.throttle';
-
-
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 
 import {withItemRenderFactory} from '../timelineItemsFactory';
+import {showFutureSection} from './state';
 
-class Timeline extends React.Component {
+const enhance = compose(
+    connect(state => ({
+        shouldShowFuture: state.shouldShowFuture,
+        items: state.items
+    })),
+    withItemRenderFactory,
+    lifecycle({
+        componentDidMount() {
+            setTimeout(() => this.props.dispatch(showFutureSection()), 1000)            
+        }
+    })
+)
+
+class TimelineItemsViewer extends React.Component {
      _ref = null;
 
     constructor(props) {
         super(props);
-        console.log(props.items)
-
         this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         const rowIds = props.items.map((row, index) => index).reverse();
 
@@ -47,6 +57,7 @@ class Timeline extends React.Component {
     render() {
         return (
             <ListView dataSource={this.state.dataSource}
+                                    enableEmptySections
                                     onScroll={e => console.log(e.nativeEvent)}
                                     renderScrollComponent={this._renderScrollComponent.bind(this)}
                                     renderRow={(item) => this.props.renderTimelineItem({item})}
@@ -58,6 +69,4 @@ class Timeline extends React.Component {
     }
 }
 
-export default compose(
-    withItemRenderFactory,
-)(Timeline)
+export default enhance(TimelineItemsViewer)
