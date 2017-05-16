@@ -9,8 +9,14 @@ import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {withItemRenderFactory} from '../timelineItemsFactory';
 import {showFutureSection} from '../state';
 
-const VIEWPORT = 675
-const FUTURE_CARD_SIZE = 70
+
+
+const stopSrollAboveFuture = (Component) => props => {
+    const VIEWPORT = 675
+    const FUTURE_CARD_SIZE = 70
+    return <Component getScrollStopPosition={props.futureLength * FUTURE_CARD_SIZE - FUTURE_CARD_SIZE / 2} />
+    
+}
 
 const enhance = compose(
     connect(state => ({
@@ -22,7 +28,9 @@ const enhance = compose(
         componentDidMount() {
             this.props.dispatch(showFutureSection(10));
         }
-    })
+    }),
+    stopSrollAboveFuture
+
 )
 
 class TimelineItemsViewer extends React.Component {
@@ -39,8 +47,7 @@ class TimelineItemsViewer extends React.Component {
     componentWillUpdate(nextProps, nextState) {
         if (nextProps.futureLength != this.props.futureLength) {
             setTimeout(() => {
-                const scrollStopPoint = this.props.futureLength * FUTURE_CARD_SIZE - FUTURE_CARD_SIZE / 2; 
-                this.refs.itemsList.scrollTo({y: scrollStopPoint, animated: false})
+                this.refs.itemsList.scrollTo({y: this.props.getScrollStopPosition(), animated: false})
             }, 1); 
         }
     }
