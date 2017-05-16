@@ -8,7 +8,7 @@ const renderTimelineItem = ({item}) => {
     }
     
     return (
-        <View style={{width: 200, height: 50, backgroundColor: item.color, margin: 10}} >
+        <View  style={{width: 200, height: 50, backgroundColor: item.color, margin: 10}} >
             <Text style={{color: "white"}}>{item.id}</Text>
         </View>
     )

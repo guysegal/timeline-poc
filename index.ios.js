@@ -12,7 +12,7 @@ import {Provider} from 'react-redux'
 import {createStore, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk';
 
-import {timelineReducer} from './src/playground/state'
+import {timelineReducer} from './src/state.js'
 const store = createStore(timelineReducer, applyMiddleware(thunk));
 
 import {setObservableConfig} from 'recompose';
@@ -20,8 +20,7 @@ import rxjsconfig from 'recompose/rxjsObservableConfig'
 setObservableConfig(rxjsconfig)
 
 //import Timeline from './src/flatList/timeline.js';
-//import Timeline from './src/invertedListView/timeline.js';
-import Timeline from './src/playground/timeline.js';
+import Timeline from './src/invertedListView/timeline.js';
 
 export default class TimelinePOC extends Component {
   state = {

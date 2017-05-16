@@ -8,20 +8,12 @@ import {
 
 import uuid from 'react-native-uuid';
 
-///////// State
 import {Provider} from 'react-redux'
-import { createStore, applyMiddleware } from 'redux'
+import {createStore, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk';
 
-function reducer(state = {}, action) {
-  switch (action.type) {
-
-    default:
-      return state
-  }
-}
-
-const store = createStore(reducer, applyMiddleware(thunk));
+import {timelineReducer} from './src/state'
+const store = createStore(timelineReducer, applyMiddleware(thunk));
 
 import {setObservableConfig} from 'recompose';
 import rxjsconfig from 'recompose/rxjsObservableConfig'
@@ -70,7 +62,7 @@ export default class TimelinePOC extends Component {
     }
     return (
       <Provider store={store}>
-        <Timeline items={this.state.items} />
+        <Timeline />
       </Provider>
     );
   }

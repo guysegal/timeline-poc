@@ -6,7 +6,7 @@ import R from 'ramda';
 
 class Omnibox extends React.PureComponent {
     render() {
-       return  <View style={{width: 200, height: 50, backgroundColor: "green", margin: 10}} />
+       return  <View onLayout={e => console.log(e.nativeEvent)} style={{width: 200, height: 50, backgroundColor: "green", margin: 10}} />
     }
 }
 

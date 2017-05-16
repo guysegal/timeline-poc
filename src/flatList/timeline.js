@@ -1,23 +1,52 @@
 import React from 'react';
-import {FlatList} from 'react-native';
-import {compose, mapProps} from 'recompose';
+import {View, ListView, FlatList, ScrollView} from 'react-native';
+import {connect} from 'react-redux';
+import {compose, lifecycle, mapProps, mapPropsStream} from 'recompose';
 import uuid from 'react-native-uuid';
+import throttle from 'lodash.throttle';
+import InvertibleScrollView from 'react-native-invertible-scroll-view';
 
 import {withItemRenderFactory} from '../timelineItemsFactory';
+import {showFutureSection} from '../state';
 
-class Timeline extends React.PureComponent {
+const VIEWPORT = 675
+const FUTURE_CARD_SIZE = 70
+
+const enhance = compose(
+    connect(state => ({
+        items: state.items,
+        futureLength: state.futureLength
+
+    })),
+    withItemRenderFactory,
+    lifecycle({
+        componentDidMount() {
+            setTimeout(() => this.props.dispatch(showFutureSection(20)), 100)            
+        }
+    })
+)
+
+class TimelineItemsViewer extends React.PureComponent {
   _ref = null;
 
+  state = {
+      scrollSize: 0
+  }
+
   componentDidMount() {
-      setTimeout(() => _ref.scrollToEnd({animated: false}), 15);
+    setTimeout(() => _ref.scrollToOffset({
+        animated: false, 
+        offset: this.state.scrollSize - this.props.futureLength * FUTURE_CARD_SIZE  - VIEWPORT + FUTURE_CARD_SIZE/2
+    }), 2000);    
   }
 
   render() {
     return (
         <FlatList
-            //onEndReached={() => console.warn("end!!")}
-            //onViewableItemsChanged={x => console.log(x)}
-            //initialNumToRender={50}
+            onContentSizeChange={(x,y) => {
+                console.log(y)
+                this.setState({scrollSize: y})
+            }}
             ref={ref => _ref = ref}
             renderItem={this.props.renderTimelineItem}
             keyExtractor={(item) => item.id}
@@ -26,6 +55,4 @@ class Timeline extends React.PureComponent {
   }
 }
 
-export default compose(
-    withItemRenderFactory
-)(Timeline)
+export default enhance(TimelineItemsViewer)
