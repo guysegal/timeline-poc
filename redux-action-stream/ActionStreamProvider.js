@@ -1,4 +1,4 @@
-import React, {Component, Children, PropTypes} from 'react'
+import React, {Component, Children} from 'react';
 import actionStreamShape from './actionStreamShape'
 
 export default class ActionStreamProvider extends Component {
@@ -18,10 +18,7 @@ export default class ActionStreamProvider extends Component {
   }
 }
 
-ActionStreamProvider.propTypes = {
-  actionStream: actionStreamShape.isRequired,
-  children: PropTypes.element.isRequired
-}
 ActionStreamProvider.childContextTypes = {
-  actionStream: actionStreamShape.isRequired
+    actionStream: actionStreamShape.isRequired
 }
+

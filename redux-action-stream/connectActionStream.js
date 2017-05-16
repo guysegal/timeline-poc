@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 import actionStreamShape from './actionStreamShape'
 
 export default (...epics) => WrappedComponent => {
@@ -35,8 +35,8 @@ export default (...epics) => WrappedComponent => {
     }
 
     ConnectActionStream.contextTypes = {
-      actionStream: actionStreamShape.isRequired
+        actionStream: actionStreamShape.isRequired
     }
-
+    
     return ConnectActionStream
 }
