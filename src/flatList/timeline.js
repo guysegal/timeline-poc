@@ -6,7 +6,7 @@ import uuid from 'react-native-uuid';
 import throttle from 'lodash.throttle';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 
-import {withItemRenderFactory} from '../timelineItemsFactory';
+import {withRenderTimelineItem} from '../timelineItemsFactory';
 import {showFutureSection} from '../state';
 
 const VIEWPORT = 675

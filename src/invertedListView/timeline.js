@@ -6,7 +6,7 @@ import uuid from 'react-native-uuid';
 import throttle from 'lodash.throttle';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 
-import {withItemRenderFactory} from '../timelineItemsFactory';
+import {withRenderTimelineItem} from '../timelineItemsFactory';
 import {showFutureSection} from '../state';
 
 const withRefs = withProps({ refs: {} });
@@ -14,7 +14,11 @@ const withRefs = withProps({ refs: {} });
 const withScrollToStopPosition = (Component) => props => {
     const VIEWPORT = 675
     const FUTURE_CARD_SIZE = 70
-    return <Component {...props} scrollStopPosition={props.futureLength * FUTURE_CARD_SIZE - FUTURE_CARD_SIZE / 2} />
+    return <Component 
+        {...props} 
+        scrollStopPosition={props.futureLength * FUTURE_CARD_SIZE - FUTURE_CARD_SIZE / 2}
+        initialListSize={props.futureLength + 10} 
+    />
 }
 
 const scrollToStopPositionOnFutureLengthChange = lifecycle({
@@ -36,7 +40,7 @@ const withFutureItems = compose(
     })),
     lifecycle({
         componentDidMount() {
-            this.props.dispatch(showFutureSection(10));
+            this.props.dispatch(showFutureSection(50));
         }
     })
 )
@@ -45,7 +49,7 @@ const enhance = compose(
     withRefs,
     withProps({listViewRefName: "TimelineItemsViewer_ListView"}),
     
-    withItemRenderFactory,
+    withRenderTimelineItem,
         
     withPastItems,
     withFutureItems,
@@ -55,7 +59,7 @@ const enhance = compose(
     
 )
 
-class TimelineItemsViewer extends React.Component {
+class InvertedList extends React.Component {
     constructor(props) {
         super(props);
         this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -83,11 +87,11 @@ class TimelineItemsViewer extends React.Component {
                 dataSource={this.state.dataSource}
                 enableEmptySections
                 renderScrollComponent={this._renderScrollComponent.bind(this)}
-                renderRow={(item) => this.props.renderTimelineItem({item})}
+                renderRow={(item) => this.props.renderItem({item})}
                 ref={r => this.props.refs[this.props.listViewRefName] = r}
                 scrollRenderAheadDistance={1500}
-                initialListSize={this.props.futureLength + 10} />)
+                initialListSize={this.props.initialListSize} />)
     }
 }
 
-export default enhance(TimelineItemsViewer)
+export default enhance(InvertedList)

@@ -29,7 +29,6 @@ export function showFutureSection(count) {
   return function (dispatch) {
       return Promise.resolve().then(() => {
           dispatch({type: "ADD_FUTURE_ITEMS", payload: _createItems(100, count, "red")})
-          dispatch({type: "SHOW_FUTURE"})
       }); 
   };
 }
