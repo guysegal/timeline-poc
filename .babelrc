@@ -1,3 +1,10 @@
 {
-  "presets": ["react-native"]
+    "presets": ["react-native"],
+    "plugins": [
+        [
+          "module-alias", [
+            { "src": "./redux-action-stream/index.js", "expose": "redux-action-stream" }
+        ]
+      ]
+    ]
 }

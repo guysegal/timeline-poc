@@ -8,6 +8,7 @@ import InvertibleScrollView from 'react-native-invertible-scroll-view';
 
 import {withRenderTimelineItem} from '../timelineItemsFactory';
 import {showFutureSection} from '../state';
+import {connectActionStream} from 'redux-action-stream';
 
 const withRefs = withProps({ refs: {} });
 
@@ -21,16 +22,14 @@ const withScrollToStopPosition = (Component) => props => {
     />
 }
 
-const scrollToStopPositionOnFutureLengthChange = lifecycle({
-    componentWillUpdate(nextProps, nextState) {
-        if (nextProps.futureLength != this.props.futureLength) {
-            setTimeout(() => {
-                const scrollTo = this.props.refs[this.props.listViewRefName].scrollTo
-                scrollTo({y: this.props.scrollStopPosition || 0, animated: false})
-            }, 1); 
-        }                
-    }
-});
+const scrollToStopPositionOnSomeAction = connectActionStream(action$ => [
+    action$.on("SOME_ACTION", someAction$ => {
+        return someAction$.subscribe(action => {
+            const {scrollTo, scrollStopPosition} = action.payload;
+            scrollTo({y: scrollStopPosition, animated: false})
+        });
+    })
+])
 
 const withPastItems = connect(state => ({items: state.items}));
 
@@ -43,20 +42,6 @@ const withFutureItems = compose(
             this.props.dispatch(showFutureSection(50));
         }
     })
-)
-
-const enhance = compose(
-    withRefs,
-    withProps({listViewRefName: "TimelineItemsViewer_ListView"}),
-    
-    withRenderTimelineItem,
-        
-    withPastItems,
-    withFutureItems,
-    
-    withScrollToStopPosition,
-    scrollToStopPositionOnFutureLengthChange,
-    
 )
 
 class InvertedList extends React.Component {
@@ -93,5 +78,33 @@ class InvertedList extends React.Component {
                 initialListSize={this.props.initialListSize} />)
     }
 }
+
+const enhance = compose(
+    withRefs,
+    withProps({listViewRefName: "TimelineItemsViewer_ListView"}),
+
+    withRenderTimelineItem,
+        
+    withPastItems,
+    withFutureItems,
+    
+    withScrollToStopPosition,
+
+    //just for example, the dispatch itself is from the button component
+    lifecycle({
+        componentDidMount(nextProps, nextState) {
+            setTimeout(() => this.props.dispatch({
+                type: "SOME_ACTION", 
+                payload: {
+                    scrollStopPosition: this.props.scrollStopPosition || 0,
+                    scrollTo: this.props.refs[this.props.listViewRefName].scrollTo
+                }
+            }), 1)                                   
+        }
+    }),
+
+    scrollToStopPositionOnSomeAction,
+    
+)
 
 export default enhance(InvertedList)
