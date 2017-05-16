@@ -32,8 +32,7 @@ class TimelineItemsViewer extends React.Component {
         const rowIds = props.items.map((row, index) => index).reverse();
 
         this.state = {
-          dataSource: this.ds.cloneWithRows(props.items, rowIds),
-          scrollSize: 0          
+          dataSource: this.ds.cloneWithRows(props.items, rowIds)
         };
     } 
 
@@ -62,7 +61,6 @@ class TimelineItemsViewer extends React.Component {
             <ListView 
                 dataSource={this.state.dataSource}
                 enableEmptySections
-                onContentSizeChange={(x,y) => this.setState({scrollSize: y})}
                 renderScrollComponent={this._renderScrollComponent.bind(this)}
                 renderRow={(item) => this.props.renderTimelineItem({item})}
                 ref='itemsList'
