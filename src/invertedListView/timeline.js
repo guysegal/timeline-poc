@@ -27,7 +27,6 @@ const scrollToStopPositionOnSomeAction = connectActionStream((action$, props) =>
         return buttonPressed$.subscribe(event => {
             const scrollTo = props.refs[props.listViewRefName].scrollTo;
             scrollTo({y: props.scrollStopPosition, animated: false})
-            //scrollTo({y: 0, animated: false})
         });
     })
 ])
@@ -36,7 +35,7 @@ const withPastItems = connect(state => ({items: state.items}));
 
 const withFutureItems = compose(
     connect(state => ({       
-        futureLength: state.futureLength || 5      
+        futureLength: state.futureLength || 50      
     })),
     lifecycle({
         componentDidMount() {
