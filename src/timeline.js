@@ -20,9 +20,9 @@ const withScrollToStopPosition = (Component) => props => {
     />
 }
 
-const scrollToStopPositionOnSomeAction = connectActionStream((action$, getProps) => [
-    action$.on("BUTTON_PRESSED", buttonPressed$ => {
-        return buttonPressed$.subscribe(event => {
+const scrollToStopPositionButtonPressed = connectActionStream((action$, getProps) => [
+    action$.on("BUTTON_PRESSED", buttonPressedEvents$ => {
+        return buttonPressedEvents$.subscribe(event => {
             const props = getProps();
             const scrollTo = props.refs[props.listViewRefName].scrollTo;
             scrollTo({y: props.scrollStopPosition, animated: false})
@@ -52,7 +52,7 @@ const enhance = compose(
     withFutureItems,    
     
     withScrollToStopPosition,
-    scrollToStopPositionOnSomeAction    
+    scrollToStopPositionButtonPressed    
 )
 
 export default enhance(InvertedList)
