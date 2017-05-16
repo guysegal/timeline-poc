@@ -13,20 +13,21 @@ import {connectActionStream} from 'redux-action-stream';
 const withRefs = withProps({ refs: {} });
 
 const withScrollToStopPosition = (Component) => props => {
-    const VIEWPORT = 675
-    const FUTURE_CARD_SIZE = 70
+    const BUTTON_SIZE = 55;
+    const FUTURE_CARD_SIZE = 70;
     return <Component 
         {...props} 
-        scrollStopPosition={props.futureLength * FUTURE_CARD_SIZE - FUTURE_CARD_SIZE / 2}
+        scrollStopPosition={props.futureLength * FUTURE_CARD_SIZE - (FUTURE_CARD_SIZE / 2) - BUTTON_SIZE}
         initialListSize={props.futureLength + 10} 
     />
 }
 
-const scrollToStopPositionOnSomeAction = connectActionStream(action$ => [
-    action$.on("SOME_ACTION", someAction$ => {
-        return someAction$.subscribe(action => {
-            const {scrollTo, scrollStopPosition} = action.payload;
-            scrollTo({y: scrollStopPosition, animated: false})
+const scrollToStopPositionOnSomeAction = connectActionStream((action$, props) => [
+    action$.on("BUTTON_PRESSED", buttonPressed$ => {
+        return buttonPressed$.subscribe(event => {
+            const scrollTo = props.refs[props.listViewRefName].scrollTo;
+            scrollTo({y: props.scrollStopPosition, animated: false})
+            //scrollTo({y: 0, animated: false})
         });
     })
 ])
@@ -89,19 +90,6 @@ const enhance = compose(
     withFutureItems,
     
     withScrollToStopPosition,
-
-    //just for example, the dispatch itself is from the button component
-    lifecycle({
-        componentDidMount(nextProps, nextState) {
-            setTimeout(() => this.props.dispatch({
-                type: "SOME_ACTION", 
-                payload: {
-                    scrollStopPosition: this.props.scrollStopPosition || 0,
-                    scrollTo: this.props.refs[this.props.listViewRefName].scrollTo
-                }
-            }), 1)                                   
-        }
-    }),
 
     scrollToStopPositionOnSomeAction,
     
