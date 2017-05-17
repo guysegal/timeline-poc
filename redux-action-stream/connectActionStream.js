@@ -15,15 +15,16 @@ export default (...epics) => WrappedComponent => {
         }
 
         componentDidMount() {
+            console.log(this.props)
             const wrappedInstace = this.refs ? this.refs.wrappedInstance: {};
             this.subscriptionArrays = epics.map(f => f(this.actionStream, () => this.props, this.refs.wrappedInstance))
         }
 
         render() {
-            const wrappedProps = {...this.props, ref: 'wrappedInstance'}
+            //const wrappedProps = {...this.props, ref: 'wrappedInstance'}
 
             return (
-              <WrappedComponent actionStream={this.actionStream} {...wrappedProps} />
+              <WrappedComponent actionStream={this.actionStream} {...this.props} />
             )
         }
 

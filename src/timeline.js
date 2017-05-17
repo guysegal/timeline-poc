@@ -1,58 +1,46 @@
 import React from 'react';
 import {View, ListView} from 'react-native';
-import {compose, lifecycle, withProps} from 'recompose';
+import {compose, lifecycle, withProps, mapProps} from 'recompose';
 import {connect} from 'react-redux';
-import {connectActionStream} from 'redux-action-stream';
 
 import InvertedList from './InvertedList';
 import {withRenderTimelineItem} from './timelineItemsFactory';
-import {showFutureSection} from './state';
+
+import withFutureItems from './hoc/withFutureItems'
+import withScrollToStopPosition from './hoc/withScrollToStopPosition'
+import onInvertedListEndReached from './hoc/onInvertedListEndReached'
+import scrollToStopPositionButtonPressed from './hoc/scrollToStopPositionButtonPressed'
 
 const withRefs = withProps({ refs: {} });
-
-const withScrollToStopPosition = (Component) => props => {
-    const BUTTON_SIZE = 55;
-    const FUTURE_CARD_SIZE = 70;
-    return <Component 
-        {...props} 
-        scrollStopPosition={props.futureLength * FUTURE_CARD_SIZE - (FUTURE_CARD_SIZE / 2) - BUTTON_SIZE - 150}
-        initialListSize={props.futureLength + 10} 
-    />
-}
-
-const scrollToStopPositionButtonPressed = connectActionStream((action$, getProps) => [
-    action$.on("BUTTON_PRESSED", buttonPressedEvents$ => {
-        return buttonPressedEvents$.subscribe(event => {
-            const props = getProps();
-            const scrollTo = props.refs[props.listViewRefName].scrollTo;
-            scrollTo({y: props.scrollStopPosition, animated: false})
-        });
-    })
-])
-
-const withPastItems = connect(state => ({items: state.items}));
-
-const withFutureItems = compose(
-    connect(state => ({       
-        futureLength: state.futureLength
-    })),
-    lifecycle({
-        componentDidMount() {
-            this.props.dispatch(showFutureSection(50));
-        }
-    })
-)
+const withPastItems = connect(state => ({pastItems: state.pastItems}));
 
 const enhance = compose(
     withRefs,
     withProps({listViewRefName: "TimelineItemsViewer_ListView"}),
-
+    
     withRenderTimelineItem,        
     withPastItems,
-    withFutureItems,    
+    withFutureItems, 
     
-    withScrollToStopPosition,
-    scrollToStopPositionButtonPressed    
+    mapProps(props => ({
+        ...props,
+        items: [...props.pastItems, ...props.futureItems]
+
+    })),
+
+    mapProps(props => {
+        const FUTURE_CARD_SIZE = 70;   
+        console.log("eeee", props)     
+        return {
+            ...props,
+            scrollStopPosition: props.futureLength * FUTURE_CARD_SIZE - (FUTURE_CARD_SIZE / 2) - 55,
+            initialListSize: props.futureLength + 10
+        }
+    }),
+    
+    //withScrollToStopPosition,
+    scrollToStopPositionButtonPressed,
+    onInvertedListEndReached
 )
 
 export default enhance(InvertedList)

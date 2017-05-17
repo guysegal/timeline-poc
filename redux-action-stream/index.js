@@ -17,4 +17,4 @@ export const createActionStreamMiddelware = () => {
 
 export const connectActionStream = require('./connectActionStream').default;
 
-export const ActionStreamProvider = require('./actionStreamProvider').default;;
+export const ActionStreamProvider = require('./ActionStreamProvider').default;;

@@ -17,17 +17,17 @@ setObservableConfig(rxjsconfig)
 
 import Timeline from './timeline.js';
 import Button from './button.js';
+import FutureFeed from './FutureFeed.js';
 
 export default class TimelinePOC extends Component {
   render() {
     return (
       <Provider store={store}>
         <ActionStreamProvider actionStream={actionStream}>
-          <View>
-            <View style={{width: 35, height: 35, alignSelf: 'flex-end', backgroundColor: "orange", margin: 10}} >
-                <Button />
-            </View>
+          <View style={{flex: 1, flexDirection: "column"}}>
+            <Button />
             <Timeline />
+            <FutureFeed style={{height: 100}} />
           </View>
         </ActionStreamProvider>
       </Provider>
