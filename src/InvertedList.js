@@ -15,7 +15,7 @@ export default class InvertedList extends React.Component {
     } 
 
     componentDidMount() {
-        _experimentalStopScrollLogic();
+        this._experimentalStopScrollLogic();
     }
 
     _experimentalStopScrollLogic() {        
@@ -27,7 +27,7 @@ export default class InvertedList extends React.Component {
                 const t1 = scrollEventsPair[0].t;
                 const y2 = scrollEventsPair[1].y;
                 const t2 = scrollEventsPair[1].t;
-                return (Math.abs((y2 - y1)) / (t2 - t1)) * 100
+                return (Math.abs((y2 - y1)) / (t2 - t1)); //units: px/ms
             })
 
         const distanceFromScrollStopPosition$= this.scrollEvents
