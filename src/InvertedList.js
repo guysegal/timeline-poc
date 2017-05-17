@@ -15,45 +15,53 @@ export default class InvertedList extends React.Component {
     } 
 
     componentDidMount() {
-        this._experimentalStopScrollLogic();
+        
     }
 
     _experimentalStopScrollLogic() {        
         this.scrollEvents = new Subject();
-        const scrollVelocity$= this.scrollEvents
+
+        const velocity$= this.scrollEvents
             .pairwise()
             .map(scrollEventsPair => {
                 const y1 = scrollEventsPair[0].y;
                 const t1 = scrollEventsPair[0].t;
                 const y2 = scrollEventsPair[1].y;
                 const t2 = scrollEventsPair[1].t;
-                return (Math.abs((y2 - y1)) / (t2 - t1));
+                return (Math.abs((y2 - y1)) / (t2 - t1)); //px/ms
             })
 
-        const scrollDirection$= this.scrollEvents
+        const distance$= this.scrollEvents
+            .map(scrollEvent => Math.abs(scrollEvent.y - this.props.scrollStopPosition))       
+
+        const relation$= this.scrollEvents
+            .map(scrollEvent => {
+                return scrollEvent.y - this.props.scrollStopPosition > 0 ? "above": "below";
+            })
+            .distinctUntilChanged()
+
+        const direction$= this.scrollEvents
             .pairwise()
             .map(scrollEventsPair => {
                 const delta = scrollEventsPair[1].y - scrollEventsPair[0].y;
                 return delta > 0 ? "up": "down";
             })
-            .distinctUntilChanged()
-            
+            .distinctUntilChanged()            
 
-        const distanceFromScrollStopPosition$= this.scrollEvents
-            .map(scrollEvent => Math.abs(scrollEvent.y - this.props.scrollStopPosition))
-
-        Observable.combineLatest(
-            scrollVelocity$, 
-            distanceFromScrollStopPosition$,
-            scrollDirection$, 
-            (scrollVelocity, distanceFromScrollStopPosition, scrollDirection) => {
-                //return distanceFromScrollStopPosition < 50 && distanceFromScrollStopPosition > 5;
-                return false;
+        Observable.combineLatest(velocity$, distance$, relation$, direction$, (velocity, distance, relation, direction) =>{
+            console.log(velocity, distance, relation, direction)
+            if (velocity > 5 && distance < 300) {
+                if (direction === "up" && relation === "below") {
+                    return true;
+                }
+                if (direction == "down" && relation === "above") {
+                    return true;
+                }
+            }
+            return false;            
         })
-        .subscribe(shouldScrollToStopPosition => {
-            if (!shouldScrollToStopPosition) return;
-            this.props.refs[this.props.listViewRefName].scrollTo({y: this.props.scrollStopPosition, animated: true})
-        });
+        .filter(x => x === true)
+        .subscribe(() => this.props.refs[this.props.listViewRefName].scrollTo({y: this.props.scrollStopPosition, animated: true}))           
     }
 
     _renderScrollComponent(props) {
@@ -69,7 +77,9 @@ export default class InvertedList extends React.Component {
 
     render() {
         return (
-            <ListView 
+            <ListView    
+                onScrollBeginDrag={() => this.setState({isDragging: true})}  
+                onScrollEndDrag={() => this.setState({isDragging: false})}               
                 onScroll={(event) => this.scrollEvents.onNext({t: new Date().getTime(), y: event.nativeEvent.contentOffset.y})}
                 dataSource={this.state.dataSource}
                 enableEmptySections

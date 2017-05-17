@@ -6,6 +6,7 @@ import uuid from 'react-native-uuid';
       for (let i=startIndex; i < startIndex + count; i++) {
           items.push({id: i, color})
       }
+      items.push({id: uuid.v4(), color: "green"});      
       return items;
   }
 
