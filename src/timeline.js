@@ -15,7 +15,7 @@ const withScrollToStopPosition = (Component) => props => {
     const FUTURE_CARD_SIZE = 70;
     return <Component 
         {...props} 
-        scrollStopPosition={props.futureLength * FUTURE_CARD_SIZE - (FUTURE_CARD_SIZE / 2) - BUTTON_SIZE}
+        scrollStopPosition={props.futureLength * FUTURE_CARD_SIZE - (FUTURE_CARD_SIZE / 2) - BUTTON_SIZE - 150}
         initialListSize={props.futureLength + 10} 
     />
 }
@@ -38,7 +38,7 @@ const withFutureItems = compose(
     })),
     lifecycle({
         componentDidMount() {
-            this.props.dispatch(showFutureSection(200));
+            this.props.dispatch(showFutureSection(50));
         }
     })
 )

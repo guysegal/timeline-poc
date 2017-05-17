@@ -27,18 +27,32 @@ export default class InvertedList extends React.Component {
                 const t1 = scrollEventsPair[0].t;
                 const y2 = scrollEventsPair[1].y;
                 const t2 = scrollEventsPair[1].t;
-                return (Math.abs((y2 - y1)) / (t2 - t1)); //units: px/ms
+                return (Math.abs((y2 - y1)) / (t2 - t1));
             })
+
+        const scrollDirection$= this.scrollEvents
+            .pairwise()
+            .map(scrollEventsPair => {
+                const delta = scrollEventsPair[1].y - scrollEventsPair[0].y;
+                return delta > 0 ? "up": "down";
+            })
+            .distinctUntilChanged()
+            
 
         const distanceFromScrollStopPosition$= this.scrollEvents
             .map(scrollEvent => Math.abs(scrollEvent.y - this.props.scrollStopPosition))
 
-        Observable.combineLatest(scrollVelocity$, distanceFromScrollStopPosition$, (scrollVelocity, distanceFromScrollStopPosition) => {
-            return false;
+        Observable.combineLatest(
+            scrollVelocity$, 
+            distanceFromScrollStopPosition$,
+            scrollDirection$, 
+            (scrollVelocity, distanceFromScrollStopPosition, scrollDirection) => {
+                //return distanceFromScrollStopPosition < 50 && distanceFromScrollStopPosition > 5;
+                return false;
         })
         .subscribe(shouldScrollToStopPosition => {
             if (!shouldScrollToStopPosition) return;
-            this.props.refs[this.props.listViewRefName].scrollTo({y: this.props.scrollStopPosition, animated: false})
+            this.props.refs[this.props.listViewRefName].scrollTo({y: this.props.scrollStopPosition, animated: true})
         });
     }
 
