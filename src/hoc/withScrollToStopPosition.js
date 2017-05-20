@@ -10,28 +10,24 @@ export default (Component) => class extends React.Component {
         }
     }
 
-    componentWillUpdate(nextProps){
-        }
-
     componentDidMount() {       
         this.onScroll$ = new Subject();    
         this.onScrollBeginDrag$ = new Subject();
         this.onScrollEndDrag$ = new Subject();
-        this.onMomentumScrollBegin$ = new Subject();
-        this.onMomentumScrollEnd$ = new Subject();
 
         const direction$ = Observable.zip(this.onScrollBeginDrag$, this.onScrollEndDrag$, (beginDrag, endDrag) => {
             if (beginDrag.contentOffset.y > endDrag.contentOffset.y) return "down";
             if (beginDrag.contentOffset.y < endDrag.contentOffset.y) return "up"         
             return "none";            
-        })    
-        const relation$= this.onScroll$
+        })
+            
+        const relativePosition= this.onScroll$
             .map(e => e.contentOffset.y - this.props.scrollStopPosition > 0  ? "above": "below")
 
         const distance$= this.onScroll$
             .map(event => Math.abs(event.contentOffset.y - this.props.scrollStopPosition));
 
-        Observable.combineLatest(direction$, relation$, distance$, (direction, relation, distance) => {
+        Observable.combineLatest(direction$, relativePosition, distance$, (direction, relation, distance) => {
             if (distance < 20) return false;
             if (direction  === "up" && relation === "above") return false;
             if (direction  === "down" && relation === "below") return false;
@@ -39,24 +35,35 @@ export default (Component) => class extends React.Component {
         })
         .subscribe(customStopPointEnabled => this.setState({customStopPointEnabled}));
 
-        relation$.distinctUntilChanged()
+        relativePosition.distinctUntilChanged()
             .filter(_ => this.state.customStopPointEnabled)
             .subscribe(x => {
-                console.log("bla", this.props.scrollStopPosition)
-                this.props.refs[this.props.listViewRefName].scrollTo({y: this.props.scrollStopPosition, animated: true})            
+                this.props.scrollToStopPosition(true)
             })                           
     }
     
     render() {
         const p = this.props;
+        
+        const onScroll = (e) => {
+            if (p.onScroll) p.onScroll(e);
+            this.onScroll$.onNext(e.nativeEvent);
+        }
+        const onScrollBeginDrag = (e) => {
+            if (p.onScrollBeginDrag) p.onScrollBeginDrag(e);
+            this.onScrollBeginDrag$.onNext(e.nativeEvent);
+        }
+        const onScrollEndDrag = (e) => {
+            if (p.onScrollEndDrag) p.onScrollEndDrag(e);
+            this.onScrollEndDrag$.onNext(e.nativeEvent);
+        }        
+        
         return (
             <Component 
                 {...p} 
-                onScroll={(e) => this.onScroll$.onNext(e.nativeEvent)}                                
-                onScrollBeginDrag={e => this.onScrollBeginDrag$.onNext(e.nativeEvent)}
-                onScrollEndDrag={e => this.onScrollEndDrag$.onNext(e.nativeEvent)}
-                onMomentumScrollBegin={e => this.onMomentumScrollBegin$.onNext(e.nativeEvent)}
-                onMomentumScrollEnd={e => this.onMomentumScrollEnd$.onNext(e.nativeEvent)}   
+                onScroll={onScroll}
+                onScrollBeginDrag={onScrollBeginDrag}
+                onScrollEndDrag={onScrollEndDrag}
             />     
         )
         

@@ -19,5 +19,5 @@ const renderTimelineItem = ({item}) => {
     )
 };
 
-export const withRenderTimelineItem = (Component) => props =>
+export const withItemsRenderer = (Component) => props =>
     <Component {...props} renderItem={renderTimelineItem} />;

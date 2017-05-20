@@ -27,7 +27,7 @@ export default class TimelinePOC extends Component {
           <View style={{flex: 1, flexDirection: "column"}}>
             <Button />
             <Timeline />
-            <FutureFeed style={{height: 100}} />
+            <FutureFeed />
           </View>
         </ActionStreamProvider>
       </Provider>

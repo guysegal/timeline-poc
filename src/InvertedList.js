@@ -27,7 +27,6 @@ export default class InvertedList extends React.Component {
     render() {
         return (
             <ListView 
-            scrollEnabled={this.state.scrollEnabled}
                 onScrollBeginDrag={this.props.onScrollBeginDrag}
                 onScrollEndDrag={this.props.onScrollEndDrag}
                 onScroll={this.props.onScroll}                
@@ -37,7 +36,7 @@ export default class InvertedList extends React.Component {
                 enableEmptySections
                 renderScrollComponent={this._renderScrollComponent.bind(this)}
                 renderRow={(item) => this.props.renderItem({item})}
-                ref={r => this.props.refs[this.props.listViewRefName] = r}
+                ref={r => this.props.refs[this.props.scrollRefName] = r}
                 scrollRenderAheadDistance={this.props.scrollStopPosition + 500}
                 initialListSize={this.props.initialListSize} />)
     }

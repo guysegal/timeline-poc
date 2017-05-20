@@ -7,22 +7,22 @@ import {compose, withState} from 'recompose';
 
 import Omnibox from './omnibox';
 import withFutureItems from './hoc/withFutureItems';
-import {withRenderTimelineItem} from './timelineItemsFactory';
-
+import {withItemsRenderer} from './timelineItemsFactory';
 
 const withActionStream = connectActionStream((action$, getProps) => [
-    action$.on("SOME_ACTION", events$ => {        
+    action$.on("SCROLL_BOTTOM_REACHED", events$ => {        
         return events$.subscribe(_ => getProps().setHeight(675));
     })
 ])
 
 const FutureFeed = (props) => {
+    console.log(props)
     return (
-        <View style={{width: 200, height: props.height}} >
+        <View style={{width: 150, height: props.height}} >
             <FlatList             
                 renderItem={props.renderItem}
                 keyExtractor={(item) => item.id}
-                data={props.items}
+                data={props.futureItems}
             />
         </View>
     )
@@ -31,7 +31,7 @@ const FutureFeed = (props) => {
 
 export default compose(
     withState("height", "setHeight", 0),
-    withRenderTimelineItem,
+    withItemsRenderer,
     withActionStream,
     withFutureItems,
 )(FutureFeed)
