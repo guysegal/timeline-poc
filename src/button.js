@@ -7,8 +7,7 @@ const ButtonView = ({onButtonClicked}) =>
 
 const mapDispatchToProps = dispatch => ({
     onButtonClicked: () => {
-        console.log("clicked")
-        dispatch({type: "BUTTON_PRESSED", payload: true})
+        dispatch({type: "SCROLL_TO_STOP_POSITION", payload: true})
     }
 })
 

@@ -16,7 +16,6 @@ const withActionStream = connectActionStream((action$, getProps) => [
 ])
 
 const FutureFeed = (props) => {
-    console.log(props)
     return (
         <View style={{width: 150, height: props.height}} >
             <FlatList             

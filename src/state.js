@@ -16,7 +16,8 @@ const initialState = {
         //{id: uuid.v4(), type: "futureFeedItem"}
     ],
     futureItems: [],    
-    futureLength: 0
+    futureLength: 0,
+    shouldShowUpperDockedOmnibox: false,
 }
 export const timelineReducer = (state = initialState, action) => {
     if (action.type === "ADD_FUTURE_ITEMS") {
@@ -25,7 +26,13 @@ export const timelineReducer = (state = initialState, action) => {
             futureItems: [...state.futureItems, ...action.payload],            
             futureLength: action.payload.length
         }
-    }      
+    }
+    if (action.type === "SET_UPPER_DOCKER_OMNIBOX_VISIBILITY") {
+        return {
+            ...state, 
+            shouldShowUpperDockedOmnibox: action.payload
+        }
+    }       
     return state;
 
 }

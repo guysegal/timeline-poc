@@ -1,8 +1,11 @@
 import React from 'react';
 import {View} from 'react-native';
-import {mapProps} from 'recompose';
+import {connect} from 'react-redux'
+import {compose, mapProps} from 'recompose';
 import uuid from 'react-native-uuid';
 import R from 'ramda';
+
+const renderOnlyWhen = predicate => Component => props => predicate(props) ? <Component {...props} /> : null;
 
 class Omnibox extends React.PureComponent {
     render() {
@@ -10,9 +13,14 @@ class Omnibox extends React.PureComponent {
     }
 }
 
-export default (Omnibox);
+const DockedOmnibox = props =>
+    <View style={{justifyContent: 'flex-start', flexGrow: 1, maxHeight: 50, backgroundColor: "yellow"}} />;
 
-export const withOmnibox = mapProps(props => {
-    const omniboxItem = {type: "omnibox", id: uuid.v4()};
-    return {...props, items: R.unionWith(R.eqBy(R.prop('id')), props.items, [omniboxItem])};
-})
+export default Omnibox;
+
+export const UpperDockedOmnibox = compose(
+    connect(state => ({shouldShowUpperDockedOmnibox: state.shouldShowUpperDockedOmnibox})),
+    renderOnlyWhen((props) => {
+        return props.shouldShowUpperDockedOmnibox
+    })
+)(DockedOmnibox);
