@@ -2,7 +2,7 @@ import React from 'react';
 import {Button} from 'react-native';
 import {connect} from 'react-redux';
 
-const ButtonView = ({onButtonClicked}) =>
+const BackToPresentButton = ({onButtonClicked}) =>
     <Button title="*"  color="black" onPress={() => onButtonClicked() }/>
 
 const mapDispatchToProps = dispatch => ({
@@ -11,4 +11,4 @@ const mapDispatchToProps = dispatch => ({
     }
 })
 
-export default connect(null, mapDispatchToProps)(ButtonView)
+export default connect(null, mapDispatchToProps)(BackToPresentButton)

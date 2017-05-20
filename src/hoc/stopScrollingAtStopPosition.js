@@ -1,13 +1,9 @@
 import React from 'react';
 import {Subject, Observable} from 'rx';
 
-export default (Component) => class extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            customStopPointEnabled: true,
-        }
+export default (Component) => class extends React.PureComponent {
+    state = {
+        customStopPointEnabled: true
     }
 
     componentDidMount() {       

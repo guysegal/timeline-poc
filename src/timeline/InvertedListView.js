@@ -1,12 +1,13 @@
 import React from 'react';
 import {ListView} from 'react-native';
-import uuid from 'react-native-uuid';
-import {compose, lifecycle, withProps, mapProps, withState} from 'recompose';
+import {compose} from 'recompose';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 
-import stopScrollingAtStopPosition from './hoc/withScrollToStopPosition'
-import dispatchOnScrollBottom from './hoc/dispatchOnScrollBottom'
-import listenToScrollRequests from './hoc/listenToScrollRequests'
+import withCustomScrollStopPosition from '../hoc/withCustomScrollStopPosition'
+import startAtScrollStopPosition from '../hoc/startAtScrollStopPosition'
+import stopScrollingAtStopPosition from '../hoc/stopScrollingAtStopPosition'
+import notifyOnScrollBottom from '../hoc/notifyOnScrollBottom'
+import listenToScrollRequests from '../hoc/listenToScrollRequests'
 
 class InvertedListView extends React.Component {
     constructor(props) {
@@ -52,33 +53,10 @@ class InvertedListView extends React.Component {
     }
 }
 
-const withRefs = withProps({ refs: {} });
-const startAtScrollStopPosition = lifecycle({
-    componentDidMount() {
-        setTimeout(() => {this.props.scrollToStopPosition();}, 1)
-    }
-})
-
-const withCustomScrollStopPosition = compose(
-    withRefs,
-    withProps({scrollRefName: uuid.v4()}), 
-    mapProps(props => {
-        const FUTURE_CARD_SIZE = 70;   
-        const y = props.futureItems.length * FUTURE_CARD_SIZE - (FUTURE_CARD_SIZE / 2) - 55;
-        return {
-            ...props,
-            scrollStopPosition: y,
-            scrollToStopPosition: (animated = false) => props.refs[props.scrollRefName].scrollTo({y, animated}),
-            initialListSize: props.futureItems.length + 10
-        }
-    }),
-)
-
-
 export default compose(
     withCustomScrollStopPosition,    
     startAtScrollStopPosition,    
     stopScrollingAtStopPosition,
-    dispatchOnScrollBottom,
+    notifyOnScrollBottom,
     listenToScrollRequests
 )(InvertedListView);

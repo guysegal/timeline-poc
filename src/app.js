@@ -15,20 +15,14 @@ import {setObservableConfig} from 'recompose';
 import rxjsconfig from 'recompose/rxjsObservableConfig'
 setObservableConfig(rxjsconfig)
 
-import Timeline from './timeline.js';
-import Button from './button.js';
-import FutureFeed from './FutureFeed.js';
+import Timeline from './timeline/Timeline.js';
 
 export default class TimelinePOC extends Component {
   render() {
     return (
       <Provider store={store}>
         <ActionStreamProvider actionStream={actionStream}>
-          <View style={{flex: 1, flexDirection: "column"}}>
-            <Button />
             <Timeline />
-            <FutureFeed />
-          </View>
         </ActionStreamProvider>
       </Provider>
     );

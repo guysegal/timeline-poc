@@ -1,13 +1,9 @@
 import React from 'react';
-import {compose, withState} from 'recompose';
 import {Subject, Observable} from 'rx';
 
-const listenToScrollDirection = (Component) => class extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    componentDidMount() {  
+export default (Component) => class extends React.Component {    
+    componentDidMount() {        
+        this.onScroll$ = new Subject();    
         this.onScrollBeginDrag$ = new Subject();
         this.onScrollEndDrag$ = new Subject();
 
@@ -15,14 +11,24 @@ const listenToScrollDirection = (Component) => class extends React.Component {
             if (beginDrag.contentOffset.y > endDrag.contentOffset.y) return "down";
             if (beginDrag.contentOffset.y < endDrag.contentOffset.y) return "up"         
             return "none";            
-        })
+        })    
 
-        direction$.distinctUntilChanged().subscribe(d => this.props.setScrollDirection(d))
+        const offset$ = this.onScroll$.map(e => e.contentOffset.y)
+
+        Observable.combineLatest(offset$, direction$, (offset, direction) => {
+            return direction == "none" || direction == "down" && offset <= 0
+        })
+        .filter(should => should === true)        
+        .subscribe(c => this.props.dispatch({type: "SCROLL_BOTTOM_REACHED"}));         
     }
     
     render() {
         const p = this.props;
         
+        const onScroll = (e) => {
+            if (p.onScroll) p.onScroll(e);
+            this.onScroll$.onNext(e.nativeEvent);
+        }
         const onScrollBeginDrag = (e) => {
             if (p.onScrollBeginDrag) p.onScrollBeginDrag(e);
             this.onScrollBeginDrag$.onNext(e.nativeEvent);
@@ -30,19 +36,16 @@ const listenToScrollDirection = (Component) => class extends React.Component {
         const onScrollEndDrag = (e) => {
             if (p.onScrollEndDrag) p.onScrollEndDrag(e);
             this.onScrollEndDrag$.onNext(e.nativeEvent);
-        }        
-        
+        }
+
         return (
             <Component 
                 {...p} 
+                onScroll={onScroll}
                 onScrollBeginDrag={onScrollBeginDrag}
                 onScrollEndDrag={onScrollEndDrag}
             />     
         )
+        
     }
 }
-
-export default compose(
-    withState("scrollDirection", "setScrollDirection", "none"),
-    listenToScrollDirection
-)

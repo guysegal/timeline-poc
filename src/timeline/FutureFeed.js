@@ -5,9 +5,9 @@ import {connectActionStream} from 'redux-action-stream';
 import {Observable} from 'rx'
 import {compose, withState} from 'recompose';
 
-import Omnibox from './omnibox';
-import withFutureItems from './hoc/withFutureItems';
-import {withItemsRenderer} from './timelineItemsFactory';
+import Omnibox from '../timelineItems/Omnibox';
+import withFutureItems from '../hoc/withFutureItems';
+import {withItemsRenderer} from '../timelineItems/timelineItemsRenderer';
 
 const withActionStream = connectActionStream((action$, getProps) => [
     action$.on("SCROLL_BOTTOM_REACHED", events$ => {        

@@ -1,10 +1,23 @@
 import {connect} from 'react-redux';
-import {compose, mapProps} from 'recompose';
+import {compose, mapProps, lifecycle} from 'recompose';
+import uuid from 'react-native-uuid';
 
-import {withItemsRenderer} from '../timelineItemsFactory';
+import {withItemsRenderer} from '../timelineItems/timelineItemsRenderer';
 import withFutureItems from './withFutureItems'
 
-const withPastItems = connect(state => ({pastItems: state.pastItems}));
+import createItems from '../utils'
+
+const withPastItems = compose(
+    connect(state => ({pastItems: state.pastItems})),
+    lifecycle({
+        componentDidMount() {
+            this.props.dispatch({type: "ADD_PAST_ITEMS", payload: [
+                ...createItems(100, "past"),
+                {id: uuid.v4(), type: "omnibox"}]
+            });
+        }
+    })
+)
 
 export default compose(
     withItemsRenderer,
