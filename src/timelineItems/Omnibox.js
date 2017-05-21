@@ -11,7 +11,7 @@ const Omnibox = (props) =>
 const DockedOmnibox = props =>
     <View style={{justifyContent: 'flex-start', flexGrow: 1, maxHeight: 50, backgroundColor: "yellow"}} />;
 
-const listen = connectActionStream((action$, getProps) => [
+const listenFuture = connectActionStream((action$, getProps) => [
     action$.on("ONLY_FUTURE_ITEMS_ARE_VISIBLE", events$ => {        
         return events$.subscribe(action => {
             getProps().setShouldShowUpperDockedOmnibox(action.payload);
@@ -19,9 +19,17 @@ const listen = connectActionStream((action$, getProps) => [
     })
 ])
 
+const listenPast = connectActionStream((action$, getProps) => [
+    action$.on("ONLY_PAST_ITEMS_ARE_VISIBLE", events$ => {   
+        return events$.subscribe(action => {
+            getProps().setShouldShowLowerDockedOmnibox(action.payload);
+        })
+    })
+]) 
+
 export const UpperDockedOmnibox = compose(
     withState("shouldShowUpperDockedOmnibox", "setShouldShowUpperDockedOmnibox", false),
-    listen,
+    listenFuture,
     renderOnlyWhen((props) => {
         return props.shouldShowUpperDockedOmnibox
     })
@@ -29,7 +37,7 @@ export const UpperDockedOmnibox = compose(
 
 export const LowerDockedOmnibox = compose(
     withState("shouldShowLowerDockedOmnibox", "setShouldShowLowerDockedOmnibox", false),
-    listen,
+    listenPast,
     renderOnlyWhen((props) => {
         return props.shouldShowLowerDockedOmnibox
     })
