@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, FlatList} from 'react-native';
 import {connect} from 'react-redux';
-import {connectActionStream} from 'redux-action-stream';
+import {connectActionStream} from 'modules/redux-action-stream';
 import {Observable} from 'rx'
 import {compose, withState} from 'recompose';
 

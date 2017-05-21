@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import uuid from 'react-native-uuid';
 import {View} from 'react-native';
 
-import {ActionStreamProvider, createActionStream, createActionStreamMiddelware} from 'redux-action-stream'
+import {ActionStreamProvider, createActionStream, createActionStreamMiddelware} from 'modules/redux-action-stream'
 const actionStream = createActionStream()
 
 import {Provider} from 'react-redux'

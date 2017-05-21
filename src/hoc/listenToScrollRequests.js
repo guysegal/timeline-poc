@@ -1,4 +1,4 @@
-import {connectActionStream} from 'redux-action-stream';
+import {connectActionStream} from 'modules/redux-action-stream';
 
 export default connectActionStream((action$, getProps) => [
     action$.on("SCROLL_TO_STOP_POSITION", actionStrem$ => {

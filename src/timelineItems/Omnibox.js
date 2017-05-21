@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import {compose, withState} from 'recompose';
-import {connectActionStream} from 'redux-action-stream';
+import {connectActionStream} from 'modules/redux-action-stream';
 
 const renderOnlyWhen = predicate => Component => props => predicate(props) ? <Component {...props} /> : null;
 
