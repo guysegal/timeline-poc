@@ -1,4 +1,4 @@
-import React from 'react';
+/*import React from 'react';
 import {View, FlatList} from 'react-native';
 import {connect} from 'react-redux';
 import {connectActionStream} from 'modules/redux-action-stream';
@@ -33,4 +33,4 @@ export default compose(
     withItemsRenderer,
     withActionStream,
     withFutureItems,
-)(FutureFeed)
+)(FutureFeed)*/

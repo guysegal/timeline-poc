@@ -12,7 +12,6 @@ export default () =>
         {/*<BackToPresentButton />        */}
         <UpperDockedOmnibox />
         <TimelineItemsViewer />
-        <FutureFeed />
     </View>
         <LowerDockedOmnibox />
 </View>
