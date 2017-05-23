@@ -12,7 +12,7 @@ const withPastItems = compose(
     lifecycle({
         componentDidMount() {
             this.props.dispatch({type: "ADD_PAST_ITEMS", payload: [
-                ...createItems(100, "past")]//,
+                ...createItems(100000, "past")]//,
                 //{id: uuid.v4(), type: "omnibox"}]
             });
         }
