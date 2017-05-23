@@ -12,8 +12,8 @@ const withPastItems = compose(
     lifecycle({
         componentDidMount() {
             this.props.dispatch({type: "ADD_PAST_ITEMS", payload: [
-                ...createItems(100, "past"),
-                {id: uuid.v4(), type: "omnibox"}]
+                ...createItems(100, "past")]//,
+                //{id: uuid.v4(), type: "omnibox"}]
             });
         }
     })
@@ -26,6 +26,5 @@ export default compose(
     mapProps(props => ({
         ...props,
         items: [...props.pastItems, ...props.futureItems]
-
     }))   
 )
