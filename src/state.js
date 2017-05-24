@@ -1,7 +1,7 @@
 import createItems from './utils';
 
 const initialState = {
-    pastItems: [...createItems(2000000, "past")],        
+    pastItems: [...createItems(200, "past")],        
     futureItems: [],    
 }
 

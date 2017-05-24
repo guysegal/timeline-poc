@@ -10,9 +10,9 @@ import {Provider} from 'react-redux'
 import {createStore, applyMiddleware} from 'redux'
 import {timelineReducer} from './state'
 import thunk from 'redux-thunk';
-import {persistStore, autoRehydrate} from 'redux-persist';
+import {persistStore} from 'redux-persist';
 
-const store = compose(autoRehydrate())(createStore)(timelineReducer, applyMiddleware(thunk, createActionStreamMiddelware()));
+const store = createStore(timelineReducer, applyMiddleware(thunk, createActionStreamMiddelware()));
 //persistStore(store, {storage: AsyncStorage});
 
 import {setObservableConfig} from 'recompose';
