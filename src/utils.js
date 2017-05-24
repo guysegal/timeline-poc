@@ -18,7 +18,13 @@ export default (count, type) => {
         }
 
         var imageIndex = Math.floor(Math.random() / 0.25);
-        items.push({id: uuid.v4(), color, type, imageUrl:imageUrls[imageIndex]})
+        //items.push({id: uuid.v4(), color, type})
+        items.push({id: uuid.v4(), color, type, imageUrl:imageUrls[imageIndex]})        
     }
+
+    var timeElapsed = new Date() - t;
+
+    console.warn('Count: ' + count + ' Type: ' + type + ' Time: ' + timeElapsed / 1000 + ' secs');
+
     return items;
 }

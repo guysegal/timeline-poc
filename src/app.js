@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import uuid from 'react-native-uuid';
-import {View} from 'react-native';
+import {View, AsyncStorage} from 'react-native';
+import {compose} from 'recompose';
 
 import {ActionStreamProvider, createActionStream, createActionStreamMiddelware} from 'modules/redux-action-stream'
 const actionStream = createActionStream()
@@ -9,7 +10,10 @@ import {Provider} from 'react-redux'
 import {createStore, applyMiddleware} from 'redux'
 import {timelineReducer} from './state'
 import thunk from 'redux-thunk';
-const store = createStore(timelineReducer, applyMiddleware(thunk, createActionStreamMiddelware()));
+import {persistStore, autoRehydrate} from 'redux-persist';
+
+const store = compose(autoRehydrate())(createStore)(timelineReducer, applyMiddleware(thunk, createActionStreamMiddelware()));
+//persistStore(store, {storage: AsyncStorage});
 
 import {setObservableConfig} from 'recompose';
 import rxjsconfig from 'recompose/rxjsObservableConfig'

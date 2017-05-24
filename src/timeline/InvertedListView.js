@@ -40,7 +40,7 @@ class InvertedListView extends React.Component {
                 renderRow={(item) => this.props.renderItem({item})}
                 enableEmptySections
                 scrollRenderAheadDistance={this.props.scrollStopPosition + 500}
-                initialListSize={this.props.initialListSize}              
+                initialListSize={50}              
 
                 onScrollBeginDrag={this.props.onScrollBeginDrag}
                 onScrollEndDrag={this.props.onScrollEndDrag}
@@ -57,6 +57,6 @@ export default compose(
     withCustomScrollStopPosition,    
     startAtScrollStopPosition,    
     stopScrollingAtStopPosition,
-    notifyOnScrollBottom,
+    //notifyOnScrollBottom,
     listenToScrollRequests
 )(InvertedListView);
